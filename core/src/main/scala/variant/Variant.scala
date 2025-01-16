@@ -230,7 +230,4 @@ object Variant:
   def isValidInitialFen(variant: Variant, fen: Option[Fen.Full], strict: Boolean = false) =
     if variant.chess960
     then fen.forall(f => Chess960.positionNumber(f).isDefined)
-    else if variant.fromPosition then
-      fen.exists: f =>
-        true //Fen.read(f).exists(_.playable(strict))
     else true
