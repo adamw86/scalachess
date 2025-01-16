@@ -128,7 +128,7 @@ case class ByRole[A](pawn: A, knight: A, bishop: A, rook: A, queen: A, king: A):
     else if f(templar) then Some(Templar)
     else None
 
-  def values: List[A] = List(pawn, knight, bishop, rook, queen, king)
+  def values: List[A] = List(pawn, knight, bishop, rook, queen, king, templar)
 
 object ByRole:
 
