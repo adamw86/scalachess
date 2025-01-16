@@ -16,7 +16,7 @@ case class Piece(color: Color, role: Role) derives Eq:
   def oneOf(rs: Set[Role]) = rs(role)
 
   def isMinor = oneOf(Set(Knight, Bishop))
-  def isMajor = oneOf(Set(Queen, Templar, Rook))
+  def isMajor = oneOf(Set(Queen, Rook))
 
   def forsyth: Char = if color.white then role.forsythUpper else role.forsyth
 
@@ -24,7 +24,7 @@ case class Piece(color: Color, role: Role) derives Eq:
   def eyes(from: Square, to: Square, mask: Bitboard): Boolean =
     role match
       case King     => from.kingAttacks.contains(to)
-      case Templar  => from.templarAttacks.contains(to)
+      case Templar  => from.templarAttacks(mask).contains(to)
       case Queen    => from.queenAttacks(mask).contains(to)
       case Rook     => from.rookAttacks(mask).contains(to)
       case Bishop   => from.bishopAttacks(mask).contains(to)

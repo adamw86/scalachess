@@ -39,7 +39,8 @@ case class Board(
     rooks,
     sliderBlockers,
     sliders,
-    white
+    white,
+    templars
   }
 
   inline def apply(inline color: Color): Bitboard = color.fold(white, black)

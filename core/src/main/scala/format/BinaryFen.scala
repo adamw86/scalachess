@@ -18,14 +18,15 @@ case class BinaryFen(value: Array[Byte]) extends AnyVal:
 
     val occupied = Bitboard(readLong(reader))
 
-    var pawns   = Bitboard.empty
-    var knights = Bitboard.empty
-    var bishops = Bitboard.empty
-    var rooks   = Bitboard.empty
-    var queens  = Bitboard.empty
-    var kings   = Bitboard.empty
-    var white   = Bitboard.empty
-    var black   = Bitboard.empty
+    var pawns     = Bitboard.empty
+    var knights   = Bitboard.empty
+    var bishops   = Bitboard.empty
+    var rooks     = Bitboard.empty
+    var queens    = Bitboard.empty
+    var kings     = Bitboard.empty
+    var white     = Bitboard.empty
+    var black     = Bitboard.empty
+    var templars  = Bitboard.empty
 
     var turn                     = White
     var unmovedRooks             = UnmovedRooks(Bitboard.empty)
@@ -147,7 +148,8 @@ case class BinaryFen(value: Array[Byte]) extends AnyVal:
             bishops = bishops,
             rooks = rooks,
             queens = queens,
-            kings = kings
+            kings = kings,
+            templars = templars
           ),
           History(
             lastMove = epMove,

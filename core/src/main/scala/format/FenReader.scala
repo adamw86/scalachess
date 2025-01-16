@@ -148,6 +148,7 @@ trait FenReader:
     var white    = Bitboard.empty
     var black    = Bitboard.empty
     var occupied = Bitboard.empty
+    var templars = Bitboard.empty
 
     inline def addPieceAt(p: Piece, s: Long) =
       occupied |= s
@@ -158,6 +159,7 @@ trait FenReader:
         case Rook   => rooks |= s
         case Queen  => queens |= s
         case King   => kings |= s
+        case Templar => templars |= s
 
       p.color match
         case Color.White => white |= s
@@ -200,7 +202,8 @@ trait FenReader:
       bishops = bishops,
       rooks = rooks,
       queens = queens,
-      kings = kings
+      kings = kings,
+      templars = templars
     )
     val board = Board(bboard, variant)
     if promoted.isEmpty

@@ -33,6 +33,10 @@ case object Knight extends PromotableRole:
 case object Pawn extends Role:
   val forsyth = 'p'
 
+case object Templar extends Role:
+  val forsyth = 't'
+
+
 object Role:
 
   val all: List[Role]                                   = List(King, Queen, Templar, Rook, Bishop, Knight, Pawn)
@@ -65,7 +69,7 @@ object Role:
       case Templar  => Option(9)
       case King     => None
 
-case class ByRole[A](pawn: A, knight: A, bishop: A, rook: A, queen: A, king: A):
+case class ByRole[A](pawn: A, knight: A, bishop: A, rook: A, queen: A, king: A, templar:A):
   def apply(role: Role): A = role match
     case Pawn     => pawn
     case Knight   => knight
@@ -76,13 +80,13 @@ case class ByRole[A](pawn: A, knight: A, bishop: A, rook: A, queen: A, king: A):
     case Templar  => templar
 
   inline def update(role: Role, f: A => A): ByRole[A] = role match
-    case Pawn   => copy(pawn = f(pawn))
-    case Knight => copy(knight = f(knight))
-    case Bishop => copy(bishop = f(bishop))
-    case Rook   => copy(rook = f(rook))
-    case Queen  => copy(queen = f(queen))
-    case King   => copy(king = f(king))
-    case Templar   => copy(templar = f(templar))
+    case Pawn     => copy(pawn = f(pawn))
+    case Knight   => copy(knight = f(knight))
+    case Bishop   => copy(bishop = f(bishop))
+    case Rook     => copy(rook = f(rook))
+    case Queen    => copy(queen = f(queen))
+    case King     => copy(king = f(king))
+    case Templar  => copy(templar = f(templar))
 
   inline def find(f: A => Boolean): Option[A] =
     if f(pawn) then Some(pawn)
@@ -142,7 +146,7 @@ object ByRole:
         f(byRole.bishop),
         f(byRole.rook),
         f(byRole.queen),
-        f(byRole.king)
+        f(byRole.king),
         f(byRole.templar)
       )
 
