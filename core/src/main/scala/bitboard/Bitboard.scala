@@ -49,6 +49,9 @@ object Bitboard:
 
     def knightAttacks: Bitboard = KNIGHT_ATTACKS(s.value)
 
+    def templarAttacks(occupied: Bitboard): Bitboard =
+      kingAttacks ^ knightAttacks ^ bishopAttacks(occupied)
+
   extension (l: Long)
     private def lsb: Square = Square.unsafe(java.lang.Long.numberOfTrailingZeros(l))
     private def msb: Square = Square.unsafe(63 - java.lang.Long.numberOfLeadingZeros(l))

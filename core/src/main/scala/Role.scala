@@ -33,9 +33,13 @@ case object Knight extends PromotableRole:
 case object Pawn extends Role:
   val forsyth = 'p'
 
+case object Templar extends Role:
+  val forsyth = 't'
+
+
 object Role:
 
-  val all: List[Role]                                   = List(King, Queen, Rook, Bishop, Knight, Pawn)
+  val all: List[Role]                                   = List(King, Queen, Templar, Rook, Bishop, Knight, Pawn)
   val allPromotable: List[PromotableRole]               = List(Queen, Rook, Bishop, Knight, King)
   val allByForsyth: Map[Char, Role]                     = all.mapBy(_.forsyth)
   val allByPgn: Map[Char, Role]                         = all.mapBy(_.pgn)
@@ -57,29 +61,32 @@ object Role:
 
   def valueOf(r: Role): Option[Int] =
     r match
-      case Pawn   => Option(1)
-      case Knight => Option(3)
-      case Bishop => Option(3)
-      case Rook   => Option(5)
-      case Queen  => Option(9)
-      case King   => None
+      case Pawn     => Option(1)
+      case Knight   => Option(3)
+      case Bishop   => Option(3)
+      case Rook     => Option(5)
+      case Queen    => Option(9)
+      case Templar  => Option(9)
+      case King     => None
 
-case class ByRole[A](pawn: A, knight: A, bishop: A, rook: A, queen: A, king: A):
+case class ByRole[A](pawn: A, knight: A, bishop: A, rook: A, queen: A, king: A, templar:A):
   def apply(role: Role): A = role match
-    case Pawn   => pawn
-    case Knight => knight
-    case Bishop => bishop
-    case Rook   => rook
-    case Queen  => queen
-    case King   => king
+    case Pawn     => pawn
+    case Knight   => knight
+    case Bishop   => bishop
+    case Rook     => rook
+    case Queen    => queen
+    case King     => king
+    case Templar  => templar
 
   inline def update(role: Role, f: A => A): ByRole[A] = role match
-    case Pawn   => copy(pawn = f(pawn))
-    case Knight => copy(knight = f(knight))
-    case Bishop => copy(bishop = f(bishop))
-    case Rook   => copy(rook = f(rook))
-    case Queen  => copy(queen = f(queen))
-    case King   => copy(king = f(king))
+    case Pawn     => copy(pawn = f(pawn))
+    case Knight   => copy(knight = f(knight))
+    case Bishop   => copy(bishop = f(bishop))
+    case Rook     => copy(rook = f(rook))
+    case Queen    => copy(queen = f(queen))
+    case King     => copy(king = f(king))
+    case Templar  => copy(templar = f(templar))
 
   inline def find(f: A => Boolean): Option[A] =
     if f(pawn) then Some(pawn)
@@ -88,13 +95,14 @@ case class ByRole[A](pawn: A, knight: A, bishop: A, rook: A, queen: A, king: A):
     else if f(rook) then Some(rook)
     else if f(queen) then Some(queen)
     else if f(king) then Some(king)
+    else if f(templar) then Some(templar)
     else None
 
   inline def fold[B](z: B)(f: (B, A) => B): B =
-    f(f(f(f(f(f(z, pawn), knight), bishop), rook), queen), king)
+    f(f(f(f(f(f(f(z, pawn), knight), bishop), rook), queen), king), templar)
 
   inline def fold[B](z: B)(f: (B, Role, A) => B): B =
-    f(f(f(f(f(f(z, Pawn, pawn), Knight, knight), Bishop, bishop), Rook, rook), Queen, queen), King, king)
+    f(f(f(f(f(f(f(z, Pawn, pawn), Knight, knight), Bishop, bishop), Rook, rook), Queen, queen), King, king), Templar, templar)
 
   inline def foreach[U](f: A => U): Unit =
     f(pawn)
@@ -103,6 +111,7 @@ case class ByRole[A](pawn: A, knight: A, bishop: A, rook: A, queen: A, king: A):
     f(rook)
     f(queen)
     f(king)
+    f(templar)
 
   inline def foreach[U](f: (Role, A) => U): Unit =
     f(Pawn, pawn)
@@ -111,6 +120,7 @@ case class ByRole[A](pawn: A, knight: A, bishop: A, rook: A, queen: A, king: A):
     f(Rook, rook)
     f(Queen, queen)
     f(King, king)
+    f(Templar, templar)
 
   inline def findRole(f: A => Boolean): Option[Role] =
     if f(pawn) then Some(Pawn)
@@ -119,13 +129,14 @@ case class ByRole[A](pawn: A, knight: A, bishop: A, rook: A, queen: A, king: A):
     else if f(rook) then Some(Rook)
     else if f(queen) then Some(Queen)
     else if f(king) then Some(King)
+    else if f(templar) then Some(Templar)
     else None
 
-  def values: List[A] = List(pawn, knight, bishop, rook, queen, king)
+  def values: List[A] = List(pawn, knight, bishop, rook, queen, king, templar)
 
 object ByRole:
 
-  def apply[A](a: A): ByRole[A] = ByRole(a, a, a, a, a, a)
+  def apply[A](a: A): ByRole[A] = ByRole(a, a, a, a, a, a, a)
 
   given Functor[ByRole] with
     def map[A, B](byRole: ByRole[A])(f: A => B): ByRole[B] =
@@ -135,7 +146,8 @@ object ByRole:
         f(byRole.bishop),
         f(byRole.rook),
         f(byRole.queen),
-        f(byRole.king)
+        f(byRole.king),
+        f(byRole.templar)
       )
 
   extension (byRole: ByRole[Bitboard])

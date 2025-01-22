@@ -23,13 +23,13 @@ case class Piece(color: Color, role: Role) derives Eq:
   // the piece at from can attack the target to when mask are all the occupied squares
   def eyes(from: Square, to: Square, mask: Bitboard): Boolean =
     role match
-      case King   => from.kingAttacks.contains(to)
-      case Queen  => from.queenAttacks(mask).contains(to)
-      case Rook   => from.rookAttacks(mask).contains(to)
-      case Bishop => from.bishopAttacks(mask).contains(to)
-      case Knight => from.knightAttacks.contains(to)
-      case Pawn   => from.pawnAttacks(color).contains(to)
-
+      case King     => from.kingAttacks.contains(to)
+      case Templar  => from.templarAttacks(mask).contains(to)
+      case Queen    => from.queenAttacks(mask).contains(to)
+      case Rook     => from.rookAttacks(mask).contains(to)
+      case Bishop   => from.bishopAttacks(mask).contains(to)
+      case Knight   => from.knightAttacks.contains(to)
+      case Pawn     => from.pawnAttacks(color).contains(to)  
   override def toString = s"$color-$role".toLowerCase
 
 object Piece:
@@ -47,7 +47,9 @@ object Piece:
       'b' -> Piece(Black, Bishop),
       'r' -> Piece(Black, Rook),
       'q' -> Piece(Black, Queen),
-      'k' -> Piece(Black, King)
+      'k' -> Piece(Black, King),
+      'T' -> Piece(White, Templar),
+      't' -> Piece(Black, Templar)
     )
 
   def fromChar(c: Char): Option[Piece] =
